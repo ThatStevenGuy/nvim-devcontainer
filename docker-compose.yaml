@@ -1,0 +1,15 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye
+    working_dir: /workspace
+    container_name: nps-projects
+    entrypoint: ""
+    command: [/bin/bash, -c, "cd /root/.devcontainer && ./init.sh && tail -f /dev/null"] 
+    stdin_open: true
+    tty: true
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
+    volumes:
+      - ../Projects:/workspace
+      - ./mount:/root/.devcontainer:ro
+      - /run/host-services/ssh-auth.sock:/ssh-agent:ro
