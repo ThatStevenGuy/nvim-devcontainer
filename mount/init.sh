@@ -6,10 +6,10 @@ script_exec() {
   script_path="post_launch/$1"
 
   if [ -f "$script_path" ]; then
-    echo "Executing post-launch script '$1'."
+    echo "Executing post-launch script \"$1\"."
     "$script_path"
   else
-    echo "Error: Script $1 not found in 'post_launch' directory."
+    echo "Error: Script \"$1\" not found in the post_launch directory."
   fi
 }
 

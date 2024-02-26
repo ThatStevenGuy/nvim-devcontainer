@@ -1,11 +1,13 @@
+#!/bin/bash
+
 # https://github.com/neovim/neovim/blob/master/INSTALL.md#linux
 
-# Exit early if we've already installed Neovim previously
+# Exit early if Neovim is already installed
 if [ -d "/opt/nvim" ]; then
     exit 1
 fi
 
-cd ~/
+cd "$HOME"
 
 # Install Neovim. Note that there is no release package for ARM64, so we'll have to build one ourselves.
 if [ "$(uname -m)" = "aarch64" ]; then
@@ -22,7 +24,7 @@ if [ "$(uname -m)" = "aarch64" ]; then
     sudo make install
 
     # Cleanup
-    cd ~/
+    cd "$HOME"
     mv /opt/nvim/source/build/* /opt/nvim
     rm -rf /opt/nvim/source
 else
@@ -34,6 +36,6 @@ fi
 
 # Add Neovim to PATH
 path_export='export PATH="$PATH:/opt/nvim/bin"'
-if ! grep -q "$path_export" ~/.bashrc; then
-    echo "$path_export" >> ~/.bashrc
+if ! grep -q "$path_export" "$HOME/.bashrc"; then
+    echo "$path_export" >> "$HOME/.bashrc"
 fi
