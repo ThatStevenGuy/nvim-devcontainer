@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# https://github.com/neovim/neovim/blob/master/INSTALL.md#linux
+# Exit immediately if anything errors out
+set -e
 
 # Exit early if Neovim is already installed
 if [ -d "/opt/nvim" ]; then
@@ -9,30 +10,21 @@ fi
 
 cd "$HOME"
 
-# Install Neovim. Note that there is no release package for ARM64, so we'll have to build one ourselves.
+# Determine the package name
 if [ "$(uname -m)" = "aarch64" ]; then
-    # Install build prerequisites
-    sudo apt install ninja-build gettext cmake unzip curl -y
-
-    # Clone Neovim
-    git clone https://github.com/neovim/neovim /opt/nvim/source
-    cd /opt/nvim/source
-    git checkout stable
-
-    # Build & install
-    make CMAKE_BUILD_TYPE=RelWithDebInfo
-    sudo make install
-
-    # Cleanup
-    cd "$HOME"
-    mv /opt/nvim/source/build/* /opt/nvim
-    rm -rf /opt/nvim/source
+    package_name="nvim-linux-arm64.tar.gz"
 else
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-    sudo tar -C /opt -xzf nvim-linux64.tar.gz
-    sudo mv /opt/nvim-linux64 /opt/nvim
-    rm nvim-linux64.tar.gz
+    package_name="nvim-linux-x86_64.tar.gz"
 fi
+
+# Strip .tar.gz for the extracted folder name
+folder_name="${package_name%.tar.gz}"
+
+# Download & extract
+curl -fLO "https://github.com/neovim/neovim/releases/latest/download/$package_name"
+sudo tar -C /opt -xzf "$package_name"
+sudo mv "/opt/$folder_name" /opt/nvim
+rm -f "$package_name"
 
 # Add Neovim to PATH
 path_export='export PATH="$PATH:/opt/nvim/bin"'
